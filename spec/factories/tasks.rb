@@ -5,12 +5,12 @@ FactoryBot.define do
     name { Faker::Lorem.sentence }
     position { rand(10) }
     project
-    #deadline { Faker::Date.between(10.days.ago, Date.today) }
+    deadline { Faker::Date.between(10.days.ago, Date.today) }
   end
 
   trait :with_comments do
-    after(:create) do |t|
+    after(:create) do |_t|
       create_list(:comment, 2, task: task)
     end
-	end
+  end
 end

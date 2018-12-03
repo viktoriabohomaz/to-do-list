@@ -32,6 +32,7 @@ module Api::V1::Auth
     param :password, String, required: true, desc: 'Password'
     error 422, 'Validation failed'
     def create
+      byebug
       super
     end
 
@@ -39,6 +40,7 @@ module Api::V1::Auth
     def destroy
       super
     end
+
     private
 
     def render_create_success
@@ -48,7 +50,7 @@ module Api::V1::Auth
     def render_create_error_bad_credentials
       render json: SerializableError.call(
         title: 'Invalid credentials',
-        detail: I18n.t('devise_token_auth.sessions.bad_credentials'),
+        detail: I18n.t('devise_token_auth.sessions.bad_credentials')
       ), status: 422
     end
 

@@ -11,6 +11,6 @@ class User < ApplicationRecord
 
   validates :nickname, presence: true, uniqueness: true, length: { in: 3..50 }
   validates_confirmation_of :password
-  
+
   has_many :projects, dependent: :destroy
 end

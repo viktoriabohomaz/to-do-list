@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SerializableError
   def self.call(title:, detail:)
     {
@@ -8,7 +10,7 @@ class SerializableError
           source: {}
         }
       ],
-      jsonapi: { version: "1.0" }
+      jsonapi: { version: '1.0' }
     }
   end
 end

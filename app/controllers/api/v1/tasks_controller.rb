@@ -4,13 +4,13 @@ module Api::V1
   class TasksController < ApiController
     load_and_authorize_resource :project
     load_and_authorize_resource through: :project, shallow: true
-    load_and_authorize_resource 
+    load_and_authorize_resource
 
     resource_description do
-    short 'Project'
-    api_versions 'v1'
-    formats ['json']
-    description <<-EOS
+      short 'Project'
+      api_versions 'v1'
+      formats ['json']
+      description <<-EOS
       ### Token Header Format
       The authentication information should be included by the client in the headers of each request. The headers follow the [RFC 6750 Bearer Token](http://tools.ietf.org/html/rfc6750) format:
       ##### Authentication headers example:
@@ -26,7 +26,7 @@ module Api::V1
       | **`client`** | This enables the use of multiple simultaneous sessions on different clients. (For example, a user may want to be authenticated on both their phone and their laptop at the same time.) |
       | **`expiry`** | The date at which the current session will expire. This can be used by clients to invalidate expired tokens without the need for an API request. |
         | **`uid`** | A unique value that is used to identify the user. This is necessary because searching the DB for users by their access token will make the API susceptible to [timing attacks](http://codahale.com/a-lesson-in-timing-attacks/). |
-    EOS
+      EOS
     end
 
     api :GET, '/api/v1/projects/:project_id/tasks', 'Show all tasks in project'
@@ -58,10 +58,10 @@ module Api::V1
     error 422, 'Validation failed'
 
     def update
-      if @task.update(project_params)
+      if @task.update(task_params)
         render jsonapi: @task, status: 200
       else
-        render jsonapi_errors: @project.errors, status: 422
+        render jsonapi_errors: @task.errors, status: 422
       end
     end
 

@@ -1,20 +1,22 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe Api::V1::Auth::RegistrationsController, type: :request do
-  let(:user) { FactoryBot.build(:user) }
+  let(:params) { FactoryBot.attributes_for(:user, password: '123456789', password_confirmation: '123456789') }
+  let(:wrong_params) { FactoryBot.attributes_for(:user, password: '123456789', password_confirmation: '123457889') }
 
-
-  describe 'POST /api/v1/auth' do
+  describe 'POST #create' do
     context 'Success' do
-      it 'should return status 201' do
-        post user_registration_path, { params: user }
-        expect(response.status).to eq(201)
+      it 'returns status 201', :show_in_doc do
+        post user_registration_path, params: params
+        expect(response).to have_http_status :created
+      end
     end
-
-      it 'should return status 422' do
-        post user_registration_path, { params: user }
-        expect(response.status).to eq(:unprocessable_entity) 
-      
+    context 'Failed' do
+      it 'returns status 403', :show_in_doc do
+        post user_registration_path, params: wrong_params
+        expect(response).to have_http_status :forbidden
       end
     end
   end
