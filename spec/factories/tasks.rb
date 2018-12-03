@@ -4,7 +4,8 @@ FactoryBot.define do
   factory :task do
     name { Faker::Lorem.sentence }
     position { rand(10) }
-    deadline { Faker::Date.between(10.days.ago, Date.today) }
+    project
+    #deadline { Faker::Date.between(10.days.ago, Date.today) }
   end
 
   trait :with_comments do

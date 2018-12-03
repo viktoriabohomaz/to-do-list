@@ -2,7 +2,9 @@
 
 module Api::V1
   class TasksController < ApiController
-    load_and_authorize_resource through: :project
+    load_and_authorize_resource :project
+    load_and_authorize_resource through: :project, shallow: true
+    load_and_authorize_resource 
 
     resource_description do
     short 'Project'

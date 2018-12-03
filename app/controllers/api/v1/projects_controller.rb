@@ -3,6 +3,7 @@
 module Api::V1
   class ProjectsController < ApiController
     load_and_authorize_resource through: :current_user
+    load_and_authorize_resource
 
     resource_description do
     short 'Project'

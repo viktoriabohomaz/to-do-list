@@ -5,7 +5,7 @@ class SerializableProject < SerializableBaseResource
 
   has_many :tasks do
     meta do
-      { count: @object.tasks&.count }
+      { count: @object.tasks.count }
     end
   end
 

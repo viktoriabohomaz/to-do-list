@@ -14,7 +14,7 @@ module Api::V1::Auth
     param :nickname, String, required: true, desc: 'Nickname'
     param :password, String, required: true, desc: 'Password'
     param :password_confirmation, String, required: false, desc: 'Password confirmation'
-    error 422, 'Validation failed'
+    error 401, 'Validation failed'
     def create
       super
     end

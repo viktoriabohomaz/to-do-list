@@ -8,6 +8,8 @@ class SerializableTask < SerializableBaseResource
 	  meta do
 	    { count: @object.comments.count }
 	  end
+	end
 	
-	attributes :id, :name, :position, :checked, :deadline
+	attributes :id, :name, :position, :checked 
 end
+
