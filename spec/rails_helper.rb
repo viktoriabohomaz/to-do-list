@@ -1,4 +1,13 @@
 # frozen_string_literal: true
+require 'simplecov'
+SimpleCov.start 'rails' do
+  add_filter "/spec/"
+  add_filter "/config/"
+  add_filter "/helpers/"
+  add_filter "/jobs/"
+  add_filter "/channels/"
+  add_filter "/mailers/"
+end  
 
 require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
@@ -9,8 +18,6 @@ abort('The Rails environment is running in production mode!') if Rails.env.produ
 require 'rspec/rails'
 require 'shoulda-matchers'
 require 'bullet'
-require 'simplecov'
-SimpleCov.start
 
 begin
   ActiveRecord::Migration.maintain_test_schema!

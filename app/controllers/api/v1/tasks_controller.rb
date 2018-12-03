@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module Api::V1
-  class ProjectsController < ApiController
-    load_and_authorize_resource through: :current_user
+  class TasksController < ApiController
+    load_and_authorize_resource through: :project
 
     resource_description do
     short 'Project'
@@ -27,47 +27,53 @@ module Api::V1
     EOS
     end
 
-    api :GET, '/api/v1/projects', 'Show all projects'
+    api :GET, '/api/v1/projects/:project_id/tasks', 'Show all tasks in project'
 
     def index
-      render jsonapi: @projects, status: 200
+      render jsonapi: @tasks, status: 200
     end
 
-    api :POST, '/api/v1/projects/:project_id/tasks', 'Create new project'
-    param :description, String, required: true, desc: 'Description'
+    api :POST, '/api/v1/projects/:project_id/tasks', 'Create a new taks in project'
+    param :name, String, required: true, desc: 'Description'
+    param :checked, String, required: false, desc: 'Checked'
+    param :position, Integer, required: false, desc: 'Position'
+    param :deadline, String, required: false, desc: 'Deadline'
     error 422, 'Validation failed'
 
     def create
-      if @project.save
-        render jsonapi: @project, status: 200
+      if @task.save
+        render jsonapi: @task, status: 200
       else
-        render jsonapi_errors: @project.errors, status: 422
+        render jsonapi_errors: @task.errors, status: 422
       end
     end
 
-    api :PUT, '/api/v1/projects/:id', 'Update project'
-    param :description, String, required: true, desc: 'Description'
+    api :PUT, '/api/v1/tasks/:id', 'Update task'
+    param :name, String, required: true, desc: 'Description'
+    param :checked, String, required: false, desc: 'Checked'
+    param :position, Integer, required: false, desc: 'Position'
+    param :deadline, String, required: false, desc: 'Deadline'
     error 422, 'Validation failed'
 
     def update
-      if @project.update(project_params)
-        render jsonapi: @project, status: 200
+      if @task.update(project_params)
+        render jsonapi: @task, status: 200
       else
         render jsonapi_errors: @project.errors, status: 422
       end
     end
 
-    api :DELETE, '/api/v1/projects/:id', 'Delete project'
+    api :DELETE, '/api/v1/tasks/:id', 'Delete task'
 
     def destroy
-      @project.destroy
+      @task.destroy
       head :ok
     end
 
     private
 
-    def project_params
-      params.permit(:id, :description)
+    def task_params
+      params.permit(:id, :position, :name, :checked, :deadline)
     end
   end
 end

@@ -16,7 +16,7 @@ Rails.application.routes.draw do
         resources :tasks, only: %i[index create]
       end
 
-      resources :tasks, only: %i[show update destroy] do
+      resources :tasks, only: %i[ update destroy] do
         resources :comments, only: %i[index create]
       end
 

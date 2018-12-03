@@ -30,7 +30,7 @@ module Api::V1::Auth
     api :POST, '/auth/sign_in', 'Create session'
     param :nickname, String, required: true, desc: 'Nickname'
     param :password, String, required: true, desc: 'Password'
-    error 401, 'Validation failed'
+    error 422, 'Validation failed'
     def create
       super
     end
@@ -49,7 +49,7 @@ module Api::V1::Auth
       render json: SerializableError.call(
         title: 'Invalid credentials',
         detail: I18n.t('devise_token_auth.sessions.bad_credentials'),
-      ), status: 401
+      ), status: 422
     end
 
     def configure_permitted_parameters

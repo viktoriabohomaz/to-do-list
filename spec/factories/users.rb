@@ -1,6 +1,7 @@
 FactoryBot.define do
   factory :user do
     nickname { Faker::Name.first_name }
+    uid { Faker::Name.first_name } 
     password { Faker::Internet.password(8) }
     password_confirmation { password }
   end
