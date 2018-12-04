@@ -1,6 +1,5 @@
 {
   "name": "todo-api",
   "private": true,
-  "engines" : { "node": "8.9.4" },
   "dependencies": {}
 }
