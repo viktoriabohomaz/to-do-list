@@ -1,7 +1,14 @@
 # frozen_string_literal: true
 
 class SerializableTask < SerializableBaseResource
-  type 'users'
+  type 'tasks'
+  belongs_to :project
 
-  attributes :nickname
+  has_many :comments do
+    meta do
+      { count: @object.comments.count }
+    end
+  end
+
+  attributes :id, :name, :position, :checked, :deadline
 end

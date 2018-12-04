@@ -1,16 +1,20 @@
 # frozen_string_literal: true
 
+require 'simplecov'
+SimpleCov.start 'rails' do
+  add_filter '/spec/'
+  add_filter '/config/'
+end
+
 require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
-Dir["./spec/support/**/*.rb"].sort.each {|f| require f}
+Dir['./spec/support/**/*.rb'].sort.each { |f| require f }
 require File.expand_path('../config/environment', __dir__)
 # Prevent database truncation if the environment is production
 abort('The Rails environment is running in production mode!') if Rails.env.production?
 require 'rspec/rails'
 require 'shoulda-matchers'
 require 'bullet'
-require 'simplecov'
-SimpleCov.start
 
 begin
   ActiveRecord::Migration.maintain_test_schema!
@@ -18,7 +22,9 @@ rescue ActiveRecord::PendingMigrationError => e
   puts e.to_s.strip
   exit 1
 end
+
 RSpec.configure do |config|
+  config.filter_run show_in_doc: true if ENV['APIPIE_RECORD']
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
   config.use_transactional_fixtures = true
   config.include FactoryBot::Syntax::Methods

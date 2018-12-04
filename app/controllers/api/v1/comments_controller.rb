@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
-module Api::V1::Auth
-  class SessionsController < DeviseTokenAuth::SessionsController
-    before_action :configure_permitted_parameters, only: :create
+module Api::V1
+  class CommentsController < ApiController
+    load_and_authorize_resource :task
+    load_and_authorize_resource through: :task, shallow: true
+    load_and_authorize_resource
 
     resource_description do
-      short 'Users sign in'
+      short 'Project'
       api_versions 'v1'
       formats ['json']
       description <<-EOS
@@ -27,34 +29,36 @@ module Api::V1::Auth
       EOS
     end
 
-    api :POST, '/auth/sign_in', 'Create session'
-    param :nickname, String, required: true, desc: 'Nickname'
-    param :password, String, required: true, desc: 'Password'
-    error 422, 'Validation failed'
-    def create
-      super
+    api :GET, '/api/v1/tasks/:task_id/comments', 'Show all comments from task'
+
+    def index
+      render jsonapi: @comments, status: 200
     end
 
-    api :DELETE, '/auth/sign_out', 'Destroy session'
+    api :POST, '/api/v1/tasks/:task_id/comments', 'Create a new comment from task'
+    param :text, String, required: true, desc: 'Text'
+    param :image, String, required: false, desc: 'Image'
+    error 422, 'Validation failed'
+
+    def create
+      if @comment.save
+        render jsonapi: @comment, status: 200
+      else
+        render jsonapi_errors: @comment.errors, status: 422
+      end
+    end
+
+    api :DELETE, '/api/v1/comments/:id', 'Delete comment'
+
     def destroy
-      super
+      @comment.destroy
+      head :ok
     end
 
     private
 
-    def render_create_success
-      render jsonapi: @resource, status: :success
-    end
-
-    def render_create_error_bad_credentials
-      render json: SerializableError.call(
-        title: 'Invalid credentials',
-        detail: I18n.t('devise_token_auth.sessions.bad_credentials')
-      ), status: 422
-    end
-
-    def configure_permitted_parameters
-      devise_parameter_sanitizer.permit(:sign_up, keys: %I[nickname])
+    def comment_params
+      params.permit(:id, :text, :image)
     end
   end
 end

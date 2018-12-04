@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Devise.setup do |config|
   config.secret_key = 'c31f184a6f0a073262496b66358d61a8daba9926a3b2e7365c791f81274c4f081826c780613edd4f0049891b843e177982e1958662b42eab83b67aa2eaef336b'
 

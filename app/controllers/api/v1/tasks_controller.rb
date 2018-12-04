@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
-module Api::V1::Auth
-  class SessionsController < DeviseTokenAuth::SessionsController
-    before_action :configure_permitted_parameters, only: :create
+module Api::V1
+  class TasksController < ApiController
+    load_and_authorize_resource :project
+    load_and_authorize_resource through: :project, shallow: true
+    load_and_authorize_resource
 
     resource_description do
-      short 'Users sign in'
+      short 'Project'
       api_versions 'v1'
       formats ['json']
       description <<-EOS
@@ -27,34 +29,53 @@ module Api::V1::Auth
       EOS
     end
 
-    api :POST, '/auth/sign_in', 'Create session'
-    param :nickname, String, required: true, desc: 'Nickname'
-    param :password, String, required: true, desc: 'Password'
-    error 422, 'Validation failed'
-    def create
-      super
+    api :GET, '/api/v1/projects/:project_id/tasks', 'Show all tasks in project'
+
+    def index
+      render jsonapi: @tasks, status: 200
     end
 
-    api :DELETE, '/auth/sign_out', 'Destroy session'
+    api :POST, '/api/v1/projects/:project_id/tasks', 'Create a new taks in project'
+    param :name, String, required: true, desc: 'Description'
+    param :checked, String, required: false, desc: 'Checked'
+    param :deadline, String, required: false, desc: 'Deadline'
+    error 422, 'Validation failed'
+
+    def create
+      if @task.save
+        render jsonapi: @task, status: 200
+      else
+        render jsonapi_errors: @task.errors, status: 422
+      end
+    end
+
+    api :PUT, '/api/v1/tasks/:id', 'Update task'
+    param :name, String, required: true, desc: 'Description'
+    param :checked, %i[true false], required: false, desc: 'Checked'
+    param :move_to, %i[up down], required: false, desc: 'Change position.'
+    param :deadline, String, required: false, desc: 'Deadline'
+    error 422, 'Validation failed'
+
+    def update
+      ChangePositionService.call(task: @task, move_to: task_params[:move_to]) if task_params[:move_to].present?
+      if @task.update(task_params.except(:move_to))
+        render jsonapi: @task, status: 200
+      else
+        render jsonapi_errors: @task.errors, status: 422
+      end
+    end
+
+    api :DELETE, '/api/v1/tasks/:id', 'Delete task'
+
     def destroy
-      super
+      @task.destroy
+      head :ok
     end
 
     private
 
-    def render_create_success
-      render jsonapi: @resource, status: :success
-    end
-
-    def render_create_error_bad_credentials
-      render json: SerializableError.call(
-        title: 'Invalid credentials',
-        detail: I18n.t('devise_token_auth.sessions.bad_credentials')
-      ), status: 422
-    end
-
-    def configure_permitted_parameters
-      devise_parameter_sanitizer.permit(:sign_up, keys: %I[nickname])
+    def task_params
+      params.permit(:id, :move_to, :name, :checked, :deadline)
     end
   end
 end

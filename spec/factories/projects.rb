@@ -7,7 +7,7 @@ FactoryBot.define do
   end
 
   trait :with_tasks do
-    after(:create) do |t|
+    after(:create) do |_t|
       create_list(:task, 5, project: project)
     end
   end

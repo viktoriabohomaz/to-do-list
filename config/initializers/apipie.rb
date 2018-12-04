@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Apipie.configure do |config|
-  config.app_name                = 'TodoApi'
+  config.app_name                = 'TodoList for RG'
   config.copyright               = 'Viktoria Bohomaz inc. 2018'
   config.doc_base_url            = '/apipie'
   config.api_base_url            = '/api'
@@ -13,4 +13,12 @@ Apipie.configure do |config|
   config.languages               = ['en']
   config.default_locale          = 'en'
   config.default_version         = 'v1'
+
+  if Rails.env.production?
+    config.authenticate = proc do
+      authenticate_or_request_with_http_basic do |username, password|
+        username == 'admin' && password == 'password123'
+      end
+    end
+  end
 end

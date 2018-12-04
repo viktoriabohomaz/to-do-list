@@ -1,7 +1,5 @@
-RSpec.shared_context 'authorize_user' do
-  let!(:user) { create(:user, uid: rand(100)) }
+# frozen_string_literal: true
 
-  before do
-    allow(@controller).to receive(:current_user).and_return(user)
-  end
+RSpec.shared_context 'authorize_user' do
+  let!(:user) { create(:user) }
 end

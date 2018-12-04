@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 class CommentImageUploader < ApplicationUploader
   def extension_white_list
-    %w(jpg jpeg png)
+    %w[jpg jpeg png]
   end
 
   version :big_thumbnail do
