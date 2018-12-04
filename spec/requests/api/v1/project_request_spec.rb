@@ -32,7 +32,6 @@ describe Api::V1::ProjectsController, type: :request do
     context 'success' do
       it 'should return status success' do
         post api_v1_projects_path(project_id: project.id), params: params, headers: headers
-        byebug
         expect(response).to have_http_status(:success)
       end
     end

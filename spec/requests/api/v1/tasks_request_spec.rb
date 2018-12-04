@@ -10,7 +10,6 @@ describe Api::V1::TasksController, type: :request do
   let(:headers) { user.create_new_auth_token }
   let(:wrong_params) { FactoryBot.attributes_for(:task, name: nil) }
 
-  
   describe 'GET #index' do
     context 'success' do
       it 'should return status 200' do
@@ -47,19 +46,21 @@ describe Api::V1::TasksController, type: :request do
   end
 
   describe 'PUT #update' do
-  let(:params_for_update) { { id: task.id, **params } }
-  let(:wrong_params_for_update) { { id: task.id, **wrong_params } }
-  let(:change_position) { { id: task.id, **move_down } }
-  let(:move_down) { FactoryBot.attributes_for(:task,  move_to: 'down',  project_id: project.id) }
+    let(:params_for_update) { { id: task.id, **params } }
+    let(:wrong_params_for_update) { { id: task.id, **wrong_params } }
+    let(:change_position) { { id: task.id, **move_down } }
+    let(:position) { { id: task.id, **move_up } }
+    let(:move_down) { FactoryBot.attributes_for(:task, move_to: 'down', project_id: project.id) }
+    let(:move_up) { FactoryBot.attributes_for(:task, move_to: 'up', project_id: project.id) }
     context 'success' do
-      xit 'should return status success' do
+      it 'should return status success' do
         put api_v1_task_path(id: task.id), params: params_for_update, headers: headers
         expect(response).to have_http_status(:success)
       end
     end
 
     context 'failure' do
-      xit 'should return status unauthorized' do
+      it 'should return status unauthorized' do
         put api_v1_task_path(id: task.id), params: params_for_update
         expect(response).to have_http_status(401)
       end
@@ -73,8 +74,16 @@ describe Api::V1::TasksController, type: :request do
         task_1 = FactoryBot.create(:task, project_id: project.id)
         task_2 = FactoryBot.create(:task, project_id: project.id)
         put api_v1_task_path(id: task.id), params: change_position, headers: headers
-        byebug
-        expect { request }.to change { task.position }.from(1).to(2)
+        task.reload
+        expect(task.position).to eq(2)
+      end
+
+      it 'position move to up' do
+        task_1 = FactoryBot.create(:task, project_id: project.id)
+        task_2 = FactoryBot.create(:task, project_id: project.id)
+        put api_v1_task_path(id: task_1.id), params: position, headers: headers
+        task.reload
+        expect(task_1.position).to eq(2)
       end
     end
   end

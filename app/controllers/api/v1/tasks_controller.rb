@@ -38,7 +38,6 @@ module Api::V1
     api :POST, '/api/v1/projects/:project_id/tasks', 'Create a new taks in project'
     param :name, String, required: true, desc: 'Description'
     param :checked, String, required: false, desc: 'Checked'
-    param :move_to, Integer, required: false, desc: 'Position'
     param :deadline, String, required: false, desc: 'Deadline'
     error 422, 'Validation failed'
 
@@ -52,14 +51,14 @@ module Api::V1
 
     api :PUT, '/api/v1/tasks/:id', 'Update task'
     param :name, String, required: true, desc: 'Description'
-    param :checked, String, required: false, desc: 'Checked'
-    param :position, Integer, required: false, desc: 'Position'
+    param :checked, %i[true false], required: false, desc: 'Checked'
+    param :move_to, %i[up down], required: false, desc: 'Change position.'
     param :deadline, String, required: false, desc: 'Deadline'
     error 422, 'Validation failed'
 
     def update
-      ChangePositionService.new(task: @task, move_to: task_params[:move_to]).call if task_params[:move_to].presence
-      if @task.update(task_params)
+      ChangePositionService.call(task: @task, move_to: task_params[:move_to]) if task_params[:move_to].present?
+      if @task.update(task_params.except(:move_to))
         render jsonapi: @task, status: 200
       else
         render jsonapi_errors: @task.errors, status: 422
