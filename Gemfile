@@ -9,7 +9,9 @@ gem 'rails', '~> 5.2.1'
 gem 'bootsnap', '>= 1.1.0', require: false
 gem 'pg'
 gem 'puma', '~> 3.11'
-gem 'jquery-turbolinks'
+gem 'rails_12factor'
+gem 'turbolinks', '~> 5.2.0'
+gem 'uglifier'
 
 # authentication
 gem 'devise_token_auth'
