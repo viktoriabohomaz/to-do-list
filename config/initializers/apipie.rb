@@ -17,7 +17,7 @@ Apipie.configure do |config|
   if Rails.env.production?
     config.authenticate = proc do
       authenticate_or_request_with_http_basic do |username, password|
-        username == Figaro.env.doc_login && password ==  Figaro.env.doc_password
+        username == 'admin' && password == 'password123'
       end
     end
   end
