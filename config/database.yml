@@ -20,3 +20,6 @@ test:
 
 production:
   <<: *default
+  database: <%= ENV['database_production'] %>
+  username: <%= ENV['database_user'] %>
+  password: <%= ENV['database_password'] %>

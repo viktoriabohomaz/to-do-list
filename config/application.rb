@@ -25,7 +25,6 @@ module TodoApi
 
     config.autoload_paths += Dir[
       Rails.root.join('app', 'serializers', '*'),
-      Rails.root.join('app', 'forms', '*'),
-    ]
+   ]
   end
 end
