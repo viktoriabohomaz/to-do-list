@@ -27,6 +27,8 @@ gem 'cancancan', '~> 2.0'
 # file uploaders
 gem 'carrierwave', '~> 1.0'
 gem 'mini_magick'
+#position
+gem 'acts_as_list'
 
 
 group :development, :test do

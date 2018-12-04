@@ -32,7 +32,6 @@ module Api::V1::Auth
     param :password, String, required: true, desc: 'Password'
     error 422, 'Validation failed'
     def create
-      byebug
       super
     end
 

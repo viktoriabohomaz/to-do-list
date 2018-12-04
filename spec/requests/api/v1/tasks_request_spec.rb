@@ -10,9 +10,7 @@ describe Api::V1::TasksController, type: :request do
   let(:headers) { user.create_new_auth_token }
   let(:wrong_params) { FactoryBot.attributes_for(:task, name: nil) }
 
-  let(:params_for_update) { { id: task.id, **params } }
-  let(:wrong_params_for_update) { { id: task.id, **wrong_params } }
-
+  
   describe 'GET #index' do
     context 'success' do
       it 'should return status 200' do
@@ -49,15 +47,19 @@ describe Api::V1::TasksController, type: :request do
   end
 
   describe 'PUT #update' do
+  let(:params_for_update) { { id: task.id, **params } }
+  let(:wrong_params_for_update) { { id: task.id, **wrong_params } }
+  let(:change_position) { { id: task.id, **move_down } }
+  let(:move_down) { FactoryBot.attributes_for(:task,  move_to: 'down',  project_id: project.id) }
     context 'success' do
-      it 'should return status success' do
+      xit 'should return status success' do
         put api_v1_task_path(id: task.id), params: params_for_update, headers: headers
         expect(response).to have_http_status(:success)
       end
     end
 
     context 'failure' do
-      it 'should return status unauthorized' do
+      xit 'should return status unauthorized' do
         put api_v1_task_path(id: task.id), params: params_for_update
         expect(response).to have_http_status(401)
       end
@@ -65,6 +67,14 @@ describe Api::V1::TasksController, type: :request do
       it 'should return status unprocessable_entity' do
         put api_v1_task_path(id: task.id), params: wrong_params_for_update, headers: headers
         expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it 'position move to down' do
+        task_1 = FactoryBot.create(:task, project_id: project.id)
+        task_2 = FactoryBot.create(:task, project_id: project.id)
+        put api_v1_task_path(id: task.id), params: change_position, headers: headers
+        byebug
+        expect { request }.to change { task.position }.from(1).to(2)
       end
     end
   end
